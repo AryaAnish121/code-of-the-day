@@ -12,6 +12,8 @@
   "dependencies": {
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
-    "mongoose": "^6.0.5"
+    "mongoose": "^6.0.5",
+    "num-words": "^1.2.2",
+    "unescape": "^1.0.1"
   }
 }
