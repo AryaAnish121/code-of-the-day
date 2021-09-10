@@ -6,7 +6,7 @@ const client = new Client();
 const https = require('https');
 var decode = require('unescape');
 
-mongoose.connect('mongodb://localhost:27017/codeoftheday');
+mongoose.connect(process.env.MONGO);
 
 const channelSchema = new mongoose.Schema({
   channelId: String,
