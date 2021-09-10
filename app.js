@@ -1,4 +1,7 @@
 require('dotenv').config();
+const express = require('express');
+const app = express();
+
 const numWords = require('num-words');
 const mongoose = require('mongoose');
 const { Client, MessageEmbed } = require('discord.js');
@@ -21,29 +24,34 @@ client.on('message', (message) => {
   if (message.content.startsWith(PREFIX)) {
     const [cmd, value] = message.content.replace(PREFIX, '').trim().split(' ');
     if (cmd === 'r') {
-      Channel.findOne({ channelId: message.channel.id }, (err, result) => {
-        if (err) {
-          console.log(err);
-        } else {
-          if (result) {
-            message.reply('Channel already registered');
+      if(message.channel.type == 'dm'){
+        message.reply('DM not supported');
+      }
+      else{
+        Channel.findOne({ channelId: message.channel.id }, (err, result) => {
+          if (err) {
+            console.log(err);
           } else {
-            const channelId = message.channel.id;
-            const channel = new Channel({
-              channelId: channelId,
-            });
-            channel.save((err) => {
-              if (err) {
-                console.log(err);
-              } else {
-                message.reply(
-                  'Done... Now, the bot will send a question every 10 minutes'
-                );
-              }
-            });
+            if (result) {
+              message.reply('Channel already registered');
+            } else {
+              const channelId = message.channel.id;
+              const channel = new Channel({
+                channelId: channelId,
+              });
+              channel.save((err) => {
+                if (err) {
+                  console.log(err);
+                } else {
+                  message.reply(
+                    'Done... Now, the bot will send a question every 10 minutes'
+                  );
+                }
+              });
+            }
           }
-        }
-      });
+        });
+      }
     } else if (cmd === 'q') {
       https.get(
         'https://quizapi.io/api/v1/questions?limit=1',
@@ -138,7 +146,10 @@ client.on('message', (message) => {
           '```!code r```' +
           `
 2. Get an instant question (format) :arrow_down:` +
-          '```!code q```'
+          '```!code q```' + 
+          `
+3. Unregister a channel (format) :arrow_down:` +
+          '```!code d```'
       );
     }
   }
@@ -222,3 +233,9 @@ client.on('ready', () => {
 client.login(process.env.BOT_TOKEN);
 
 setInterval(askQuestion, 600000);
+
+app.get('/', (req, res) => {
+  res.send('hello world');
+});
+
+app.listen(3000);
